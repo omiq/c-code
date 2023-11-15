@@ -1,4 +1,5 @@
 #include "SDL.h"
+#include "SDL2_image.h"
 #include <stdio.h>
 
 // A basic game object
@@ -8,7 +9,17 @@ typedef struct GameObjects {
   int height;
   short life;
   char *name;
+  SDL_Surface* image;
 } GameObject;
+
+// Store Window dimensions
+int window_width;
+int window_height;
+
+// Initialize
+SDL_Window *window;                    // Declare a window
+SDL_Renderer *renderer;                // Declare a renderer
+SDL_Surface* windowSurface;            // Window surface for blitting
 
 // This is where we will move our characters
 int processEvents(SDL_Window *window, GameObject *player)
@@ -59,23 +70,23 @@ int processEvents(SDL_Window *window, GameObject *player)
 
           // Cursor scancodes
           case SDL_SCANCODE_LEFT:
-            player->x -= 10;
+            if((player->x-10)>0) player->x -= 10;
             break;
 
           case SDL_SCANCODE_RIGHT:
-            player->x += 10;
+            if((player->x+player->width+10)< window_width) player->x += 10;
             break;
 
           case SDL_SCANCODE_UP:
-            player->y -= 10;
+            if((player->y-10)>0) player->y -= 10;
             break;
 
           case SDL_SCANCODE_DOWN:
-            player->y += 10;
+            if((player->y+player->height+10)< window_height) player->y += 10;
             break;
 
           default:
-            printf("%d",event.key.keysym.scancode);
+            printf("\n%d",event.key.keysym.scancode);
             fflush(stdout);
             break;
 
@@ -101,23 +112,32 @@ void doRender(SDL_Renderer *renderer, GameObject *this_game_object)
   
   // Clear the view area
   SDL_RenderClear(renderer);
-  
-  // Set the drawing color to red
-  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
-  // An exciting red box
-  SDL_Rect rect = { this_game_object->x, this_game_object->y, this_game_object->width, this_game_object->height };
-  SDL_RenderFillRect(renderer, &rect);
+  // An exciting red box   
+  //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);// Set the drawing color to red
+  //SDL_Rect rect = { this_game_object->x, this_game_object->y, this_game_object->width, this_game_object->height };
+  //SDL_RenderFillRect(renderer, &rect);
   
+
+  SDL_Rect blit_dest;
+  blit_dest.x = this_game_object->x;
+  blit_dest.y = this_game_object->y;
+  windowSurface = SDL_GetWindowSurface( window );
+  int result = SDL_BlitSurface( this_game_object->image, NULL, windowSurface, &blit_dest );
+
+  if ( result < 0 ) {
+    // blit failed
+    printf(SDL_GetError());
+    SDL_Quit();
+  }
+
   //We are done drawing, "present" or show to the screen what we've drawn
   SDL_RenderPresent(renderer);
 }
 
 int main(int argc, char *argv[])
 {
-  SDL_Window *window;                    // Declare a window
-  SDL_Renderer *renderer;                // Declare a renderer
-  
+
   SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
    
   //Create an application window with the following settings:
@@ -128,10 +148,7 @@ int main(int argc, char *argv[])
                             200,                               // height, in pixels
                             0                                  // flags
                             );
-  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-  
-  int window_width;
-  int window_height;
+  renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
   SDL_GetWindowSizeInPixels(window,&window_width,&window_height);
 
 
@@ -139,6 +156,11 @@ int main(int argc, char *argv[])
   GameObject player;
   player.width = 32;
   player.height = 32;
+  player.image = SDL_DisplayFormat(SDL_LoadBMP("sprite.bmp"));
+  if ( !player.image ) {
+    printf(SDL_GetError());
+  }
+
   player.x = (window_width/2)-(player.width/2);
   player.y = (window_height/2)-(player.height/2);
 
@@ -149,14 +171,12 @@ int main(int argc, char *argv[])
   //Event loop
   while(!done)
   {
-    //Check for events
+    // Check for events
     done = processEvents(window, &player);
     
-    //Render display
+    // Render display
     doRender(renderer, &player);
     
-    //don't burn up the CPU
-    SDL_Delay(5);
   }
   
   

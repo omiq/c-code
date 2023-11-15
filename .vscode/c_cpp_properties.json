@@ -4,7 +4,9 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/homebrew/Cellar/sdl2/2.28.5/include/SDL2"
+                "/opt/homebrew/Cellar/sdl2/2.28.5/include/SDL2",
+                "${workspaceFolder}/include/SDL2_image/**",
+                "${workspaceFolder}/lib/SDL2_image/**"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -18,7 +20,10 @@
         {
             "name": "SDL2",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/opt/homebrew/Cellar/sdl2/2.28.5/include/SDL2",
+                "${workspaceFolder}/include/SDL2_image/**",
+                "${workspaceFolder}/lib/SDL2_image/**"
             ],
             "defines": [],
             "macFrameworkPath": [
