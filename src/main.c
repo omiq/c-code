@@ -125,11 +125,7 @@ void doRender(SDL_Renderer *renderer, GameObject *this_game_object)
 
   SDL_Rect blit_dest = {this_game_object->x,this_game_object->y,32,32};
   
-  int result = 1;
-  // int result = SDL_BlitSurface(this_game_object->image, NULL, windowSurface, &blit_dest);
-	
-	SDL_RenderCopy(renderer, this_game_object->image, NULL, &blit_dest); 
-
+  int result = SDL_RenderCopy(renderer, this_game_object->image, NULL, &blit_dest); 
 
   if ( result < 0 ) {
     // blit failed
@@ -167,8 +163,6 @@ int main(int argc, char *argv[])
   player.height = 32;
 
   windowSurface = IMG_Load("./sprite.png");
-
-
   if (!windowSurface) {
     fprintf(stderr, "could not load image: %s\n", IMG_GetError());
     return 1;
