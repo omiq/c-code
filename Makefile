@@ -1,7 +1,7 @@
 SRC_DIR = src
 BUILD_DIR = build
 CC = /usr/bin/gcc
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+SRC_FILES = $(SRC_DIR)/main.c #$(wildcard $(SRC_DIR)/*.c)
 OBJ_NAME = game
 INCLUDE_PATHS = -Iinclude/SDL2 -Iinclude/SDL2_image
 LIBRARY_PATHS = -Llib
