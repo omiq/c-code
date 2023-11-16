@@ -10,6 +10,7 @@ typedef struct GameObjects {
   int x, y;
   int width;
   int height;
+  int speed;
 } GameObject;
 
 GameObject brick;
@@ -32,9 +33,6 @@ SDL_Texture *brick_texture;            // Brick graphic
 // This is where user actions happen
 int processEvents(SDL_Window *window)
 {
-
-  // Alternative to checking keydown event
-  const Uint8 *state = SDL_GetKeyboardState(NULL);
 
   // To store the event
   SDL_Event event;
@@ -76,23 +74,6 @@ int processEvents(SDL_Window *window)
             done = 1;
             break;
 
-          // Cursor scancodes
-          case SDL_SCANCODE_LEFT:
-            if((player.x-10)>0) player.x -= 10;
-            break;
-
-          case SDL_SCANCODE_RIGHT:
-            if((player.x+player.width+10)< window_width) player.x += 10;
-            break;
-
-          case SDL_SCANCODE_UP:
-            if((player.y-10)>0) player.y -= 10;
-            break;
-
-          case SDL_SCANCODE_DOWN:
-            if((player.y+player.height+10)< window_height) player.y += 10;
-            break;
-
           default:
             printf("\n%d",event.key.keysym.scancode);
             fflush(stdout);
@@ -123,6 +104,32 @@ void draw_image(SDL_Texture *image, int x, int y)
     printf("Error drawing %s\n", SDL_GetError());
     SDL_Quit();
   }
+}
+
+void check_controls()
+{
+
+  // Alternative to checking keydown event
+  const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+  // Cursor scancodes
+  if(state[SDL_SCANCODE_LEFT]) {
+    if((player.x-player.speed)>0) player.x -= player.speed;
+  };
+
+  if(state[SDL_SCANCODE_RIGHT]) {
+    if((player.x+player.width+player.speed)< window_width) player.x += player.speed;
+  };
+
+  if(state[SDL_SCANCODE_UP]) {
+    if((player.y-player.speed)>0) player.y -= player.speed;
+  };
+
+  if(state[SDL_SCANCODE_DOWN]) {
+    if((player.y+player.height+player.speed)< window_height) player.y += player.speed;
+  };
+  
+
 }
 
 // Render the graphics to the screen
@@ -196,6 +203,7 @@ int main(int argc, char *argv[])
   player.height = 32;
   player.x = (window_width/2)-(player.width/2);
   player.y = (window_height/2)-(player.height/2);
+  player.speed = 1;
   player_surface = IMG_Load("./sprite.png");
   if (!player_surface) {
     fprintf(stderr, "could not load player image: %s\n", IMG_GetError());
@@ -212,6 +220,11 @@ int main(int argc, char *argv[])
   //Event loop
   while(!done)
   {
+
+
+    // Check keyboard and joystick
+    check_controls();
+
     // Check for events
     done = processEvents(window);
     
