@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.embeddedhtml": "html",
-        "ios": "c"
+        "ios": "c",
+        "stdio.h": "c"
     }
 }

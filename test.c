@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "SDL.h"
-#include <SDL2_image/SDL_image.h>
+#include "SDL_image.h"
 
 
 // A basic game object
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
   player.width = 32;
   player.height = 32;
 
-  windowSurface = IMG_Load("./sprite.png");
+  windowSurface = IMG_Load("/Users/chrisg/Library/CloudStorage/Dropbox/My Mac (Chriss-Mac-mini.local)/Documents/GitHub/c-code/sprite.png");
 
 
   if (!windowSurface) {
