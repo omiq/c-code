@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "SDL.h"
-#include <SDL2_image/SDL_image.h>
+#include <SDL_image.h>
 
 
 // A basic game object
